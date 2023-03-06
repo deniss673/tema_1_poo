@@ -31,70 +31,40 @@ public:
 
     ~tabla(){}
 
+    /*friend std::ostream& operator<<(std::ostream& os, const tabla& t){
+        os << "Tabla este reprezentata de "<<t.t_p;
+        return os;
+    }*/
+
 
 
 };
 
-class barca_2 {
+class barca {
 private:
-    int hp=2;
+    int hp;
     int poz_cap;
     int poz_coada;
 
 public:
     int const getHp(int x){return hp;}
 
-    barca_2(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
+    barca(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
 
-    barca_2(const barca_2& other): poz_cap{other.poz_cap},poz_coada{other.poz_coada},hp{other.hp}{};
+    barca(const barca& other): poz_cap{other.poz_cap},poz_coada{other.poz_coada},hp{other.hp}{};
 
-    barca_2& operator=(const barca_2& other){
+    barca& operator=(const barca& other){
         poz_cap=other.poz_cap;
         poz_coada=other.poz_coada;
         hp=other.hp;
         return *this;
     }
-    ~barca_2(){}
+    ~barca(){}
 
-    friend std::ostream& operator<<(std::ostream& os, const barca_2& b2){
-        os << "Barca care pleaca din" << b2.poz_cap << "pana in" <<b2.poz_coada << "are "<< b2.hp<< "puncte de viata";
+    friend std::ostream& operator<<(std::ostream& os, const barca& b){
+        os << "Barca care pleaca din" << b.poz_cap << "pana in" <<b.poz_coada << "are "<< b.hp<< "puncte de viata";
         return os;
 
-    }
-
-};
-
-class barca_3 {
-private:
-    int hp=3;
-    int poz_cap;
-    int poz_coada;
-public:
-    int const getHp(){return hp;}
-
-    barca_3(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
-
-    barca_3(const barca_3& other): poz_cap{other.poz_cap},poz_coada{other.poz_coada},hp{other.hp}{};
-
-    barca_3& operator=(const barca_3& other){
-        poz_cap=other.poz_cap;
-        poz_coada=other.poz_coada;
-        hp=other.hp;
-        return *this;
-    }
-
-    ~barca_3(){}
-
-    friend std::ostream& operator<<(std::ostream& os, const barca_3& b3){
-        os << "Barca care pleaca din" << b3.poz_cap << "pana in" <<b3.poz_coada << "are "<< b3.hp<< "puncte de viata";
-        return os;
-
-    }
-
-    void incaMerge(){
-        if (getHp()==0){
-            std::cout<<"Ai pierdut o barca! :(";
-        }
     }
 
 };
@@ -144,30 +114,36 @@ void afisare_tabpla_i(tabla a){
 
 }
 
-int main(){
-    std::array<int,100> x;
-    for(int i=0;i<100;i++){
-        if (i==30){
-            x[i]=-1;
-        }
-        else if (i==31){
-            x[i]=2;
-        }
-        else if (i==32){
-            x[i]=3;
-        }
-        else
-            x[i]=0;
+class jucator{
+    bool tip_jucator;
+    tabla t;
+private:
+    jucator(const bool tip_jucator_, tabla t_) : tip_jucator{tip_jucator_},t{t_}{};
+    jucator(const jucator& other):tip_jucator(other.tip_jucator),t{other.t}{};
+    ~jucator(){}
+    jucator& operator=(const jucator& other){
+        tip_jucator=other.tip_jucator;
+        t=other.t;
+        return *this;
     }
-    tabla player{x};
+    /*friend std::ostream& operator<<(std::ostream& os, const jucator& j){
+        os << "Jucator real="<<j.tip_jucator<<"cu tabla reprezentate astfel: "<<j.t.t_p;
+        return os;
+    }*/
+    void afis() {
+        if (tip_jucator == true) {
+            afisare_tabla_p(t);
+        }
+        else {
+            afisare_tabpla_i(t);
+        }
+    }
+};
 
-    afisare_tabla_p(player);
+
+int main(){
 
 
-    afisare_tabla_p(player);
-
-
-    std::cout<<"GATA JOACA";
 
     return 0;
 }
