@@ -3,114 +3,173 @@
 #include <random.hpp>
 #include <csv.hpp>
 #include <date.h>
-
 #include <iostream>
 #include <cctype>
 #include <chrono>
 #include <thread>
+#include <string>
+#include <utility>
+#include <array>
 
-std::string make_salt() {
-    // important este ca salt-ul să fie unic, nu contează că nu este aleator
-    // se stochează ca text clar, lângă parola hashed
-    static uint64_t nr = 1u;
-    std::string salt;
-    auto bytes = static_cast<unsigned char*>(static_cast<void*>(&nr));
-    for(unsigned i = 0; i < 16; i++) {
-        salt += bytes[i%8];
+
+
+class tabla{
+private:
+    std::array<int,100> t_p;
+
+public:
+    int const getNr(int x){return t_p[x];}
+
+    tabla(const std::array<int,100> t_p_) : t_p{t_p_}{}
+
+    tabla(const tabla& other): t_p{other.t_p}{}
+
+    tabla& operator=(const tabla& other){
+        t_p=other.t_p;
+        return *this;
     }
-    ++nr;
-    return salt;
+
+    ~tabla(){}
+
+
+
+};
+
+class barca_2 {
+private:
+    int hp=2;
+    int poz_cap;
+    int poz_coada;
+
+public:
+    int const getHp(int x){return hp;}
+
+    barca_2(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
+
+    barca_2(const barca_2& other): poz_cap{other.poz_cap},poz_coada{other.poz_coada},hp{other.hp}{};
+
+    barca_2& operator=(const barca_2& other){
+        poz_cap=other.poz_cap;
+        poz_coada=other.poz_coada;
+        hp=other.hp;
+        return *this;
+    }
+    ~barca_2(){}
+
+    friend std::ostream& operator<<(std::ostream& os, const barca_2& b2){
+        os << "Barca care pleaca din" << b2.poz_cap << "pana in" <<b2.poz_coada << "are "<< b2.hp<< "puncte de viata";
+        return os;
+
+    }
+
+};
+
+class barca_3 {
+private:
+    int hp=3;
+    int poz_cap;
+    int poz_coada;
+public:
+    int const getHp(){return hp;}
+
+    barca_3(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
+
+    barca_3(const barca_3& other): poz_cap{other.poz_cap},poz_coada{other.poz_coada},hp{other.hp}{};
+
+    barca_3& operator=(const barca_3& other){
+        poz_cap=other.poz_cap;
+        poz_coada=other.poz_coada;
+        hp=other.hp;
+        return *this;
+    }
+
+    ~barca_3(){}
+
+    friend std::ostream& operator<<(std::ostream& os, const barca_3& b3){
+        os << "Barca care pleaca din" << b3.poz_cap << "pana in" <<b3.poz_coada << "are "<< b3.hp<< "puncte de viata";
+        return os;
+
+    }
+
+    void incaMerge(){
+        if (getHp()==0){
+            std::cout<<"Ai pierdut o barca! :(";
+        }
+    }
+
+};
+
+void afisare_tabla_p(tabla a){
+    std::cout<<" ";
+    for (char x='A';x<='J';x++){
+        std::cout<<" "<<x;
+    }
+    std::cout<<"\n";
+    for(int i=0; i<10;i++){
+        std::cout<<i;
+        for(int j=0;j<10;j++){
+            int y=i*10+j;
+            if (a.getNr(y)==0)
+                std::cout<<" ~";
+            else if (a.getNr(y)==-1)
+                std::cout<<" X";
+            else if (a.getNr(y)<5 && a.getNr(y)>0)
+                std::cout<<" "<<a.getNr(y);
+        }
+        std::cout<<"\n";
+    }
 }
 
-std::string hash_password(const std::string& plain) {
-    return digestpp::blake2b(512).set_salt(make_salt()).absorb(plain).hexdigest();
+void afisare_tabpla_i(tabla a){
+    std::cout<<" ";
+    for (char x='A';x<='J';x++){
+        std::cout<<" "<<x;
+    }
+    std::cout<<"\n";
+    for(int i=0; i<10;i++){
+        std::cout<<i;
+        for(int j=0;j<10;j++){
+            int y=i*10+j;
+            if (a.getNr(y)==0)
+                std::cout<<" ~";
+            else if (a.getNr(y)==-1)
+                std::cout<<" @";
+            else if (a.getNr(y)==1){
+                std::cout<<" X";
+            }
+
+        }
+        std::cout<<"\n";
+    }
+
 }
 
-int main() {
-    std::cout << "-----------------------------------------------\n";
-
-    std::string plain = "temaOOP12345$";
-    std::cout << hash_password(plain) << "\n"
-              << hash_password(plain) << "\n";
-
-    std::cout << "-----------------------------------------------\n";
-
-    rlutil::setConsoleTitle("test");
-    rlutil::saveDefaultColor();
-    rlutil::setColor(rlutil::BLUE);
-    rlutil::cls();
-    int key = rlutil::getkey(); // apel blocant; apelează kbhit și getch
-    switch(std::tolower(key)) {
-    case rlutil::KEY_SPACE:
-        std::cout << "pressed space\n";
-        break;
-    case 'w':
-        std::cout << "pressed w\n";
-        break;
-    case 'a':
-        std::cout << "pressed a\n";
-        break;
-    case 's':
-        std::cout << "pressed s\n";
-        break;
-    case 'd':
-        std::cout << "pressed d\n";
-        break;
-    default:
-        std::cout << "other key (" << key << ")\n";
-        break;
+int main(){
+    std::array<int,100> x;
+    for(int i=0;i<100;i++){
+        if (i==30){
+            x[i]=-1;
+        }
+        else if (i==31){
+            x[i]=2;
+        }
+        else if (i==32){
+            x[i]=3;
+        }
+        else
+            x[i]=0;
     }
-    std::cout << "test color text\n";
-    rlutil::resetColor();
+    tabla player{x};
 
-    std::cout << "-----------------------------------------------\n";
+    afisare_tabla_p(player);
 
-    using namespace std::chrono_literals;
-    std::cout << "begin sleep\n";
-    std::this_thread::sleep_for(600ms);
-    std::cout << "end sleep\n";
 
-    std::cout << "-----------------------------------------------\n";
+    afisare_tabla_p(player);
 
-    using Random = effolkronium::random_static;
-    // Random::seed(42);
-    std::cout << Random::get(1, 1000) << "\n";
 
-    std::cout << "-----------------------------------------------\n";
+    std::cout<<"GATA JOACA";
 
-    using namespace csv;
-    CSVReader reader{"date.csv"};
-    for (CSVRow& row : reader) {
-        std::cout << "nume: " << row["nume"].get_sv() << "\n";
-        // std::cout << "nume: " << row["nume"].get<>() << "\n";
-    }
-
-    std::cout << "-----------------------------------------------\n";
-
-    using namespace std::chrono;
-    using namespace date;
-    using date::sys_days;
-    using date::days;
-    using date::weeks;
-    using date::months;
-    auto d1 = 2022_y/10/01;
-    auto d2 = 2023_y/05/26;
-
-    auto dp1 = sys_days{d1};
-    auto dp2 = sys_days{d2};
-
-    std::cout << "Anul 2022-2023 are "
-              << duration<float, months::period>(dp2 - dp1).count() << " luni"
-              << " sau "
-              << duration<float, weeks::period>(dp2 - dp1).count() << " săptămâni"
-              << " sau "
-              << duration<float, days::period>(dp2 - dp1).count() << " zile"
-              << ", adică "
-              << floor<months>(dp2 - dp1).count() << " luni, "
-              << floor<weeks>(dp2 - dp1 - floor<months>(dp2 - dp1)).count() << " săptămâni, "
-              << floor<days>(dp2 - dp1 - floor<weeks>(dp2 - dp1)).count() - 1 << " zile."
-              << "\n";
-
-    std::cout << "-----------------------------------------------\n";
     return 0;
 }
+
+/*rlutil */
