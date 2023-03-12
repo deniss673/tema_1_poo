@@ -114,10 +114,15 @@ void afisare_tabpla_i(tabla a){
 
 }
 
+int citire(std::string x){
+    int nr=10*(x[1]-'0')+(x[0]-'A');
+    return nr;
+}
+
 class jucator{
     bool tip_jucator;
     tabla t;
-private:
+public:
     jucator(const bool tip_jucator_, tabla t_) : tip_jucator{tip_jucator_},t{t_}{};
     jucator(const jucator& other):tip_jucator(other.tip_jucator),t{other.t}{};
     ~jucator(){}
@@ -140,9 +145,106 @@ private:
     }
 };
 
+std::string conversie(int x){
+    std::string a,b,c;
+    a=('A'+x%10);
+    b=('0'+x/10);
+    c=a+b;
+    return c;
+}
+
+
+
+int alegere(int a,std::array<int,100> x,int nr){
+    std::vector<int> v;
+    int val;
+    if(x[a-nr+1]==0){
+        val=a-nr+1;
+        v.push_back(val);
+    }
+    if(x[a+nr-1]==0){
+        val=a+nr-1;
+        v.push_back(val);
+    }
+    if(x[a-10*(nr-1)]==0){
+        val=a-10*(nr-1);
+        v.push_back(val);
+    }
+    if(x[a+10*(nr-1)]==0){
+        val=a+10*(nr-1);
+        v.push_back(val);
+    }
+    int i;
+    std::cout<<"Alege unde va fi celalat cap al barcii:\n";
+    for(unsigned c=0;c<v.size();c++){
+        std::cout<<c+1<<"."<<conversie(v[c])<<"\n";
+    }
+    std::cin>>i;
+    while(0>i || i>=v.size()){
+        std::cout<<"Introdu o varianta din cele afisate mai sus!\n";
+        std::cin>>i;
+    }
+    return v[i];
+}
+
+void alegere_barci(std::array<int,100> &x){
+    int b2=0,b3=0;
+    while(b2!=3){
+        std::string b;
+        std::cout<<"Alege unde va fi catarmul\n";
+        std::cin>>b;
+        int a=citire(b);
+        while(a<0 || a>99){
+            std::cout<<"Alege un input format din o litera de la A la J si o cifra de la 0 la 9!\n";
+            std::cin>>b;
+            a=citire(b);
+        }
+
+        if (x[a]!=0){
+            std::cout<<"Deja ai aici o barca\n";
+            continue;
+        }
+        else{
+            x[a]=2;
+            int r=alegere(a,x,2);
+            x[r]=2;
+            b2++;
+        }
+    }
+    while(b3!=3){
+        std::string b;
+        std::cout<<"Alege unde va fi catarmul\n";
+        std::cin>>b;
+        int a=citire(b);
+        while(a<0 || a>99){
+            std::cout<<"Alege un input format din o litera de la A la J si o cifra de la 0 la 9!\n";
+            std::cin>>b;
+            a=citire(b);
+        }
+        if (x[a]!=0){
+            std::cout<<"Deja ai aici o barca\n";
+            continue;
+        }
+        else{
+            x[a]=3;
+            int r=alegere(a,x,3);
+            x[r]=3;
+            x[a+(a-r)/2]=3;
+            b3++;
+        }
+    }
+}
 
 int main(){
-
+    bool game=true;
+    while(game){
+        std::array<int,100> x{0};
+        alegere_barci(x);
+        tabla t{x};
+        jucator eu{true,t};
+        eu.afis();
+        game=false;
+    }
 
 
     return 0;
