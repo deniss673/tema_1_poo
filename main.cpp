@@ -3,6 +3,7 @@
 #include <string>
 #include <array>
 #include <cmath>
+#include <utility>
 
 
 class tabla{
@@ -12,51 +13,43 @@ private:
 public:
     int getNr(int x){return t_p[x];}
 
-    tabla(){}
+    tabla()=default;
 
-    tabla(const std::array<int,100> t_p_) : t_p{t_p_}{}
+    explicit tabla(const std::array<int,100> t_p_) : t_p{t_p_}{}
 
-    tabla(const tabla& other): t_p{other.t_p}{}
+    tabla(const tabla& other)= default;
 
     tabla& operator=(const tabla& other){
         t_p=other.t_p;
         return *this;
     }
 
-    ~tabla(){}
+
+
+    ~tabla()= default;
 
     std::array<int,100> getArray(){
         return t_p;
     }
-
     /*friend std::ostream& operator<<(std::ostream& os, const tabla& t){
         os << "Tabla este reprezentata de "<<t.t_p;
         return os;
     }*/
-
-
-
-
-
-
 };
 
 class barca {
 private:
-    int hp;
     int poz_cap;
     int poz_coada;
+    int hp;
 
 public:
-    const int getHp(){return hp;}
 
-    std::array<int,2> getPoz(){
-        std::array<int,2> pozitie{poz_cap,poz_coada};
-        return pozitie;
+    barca(){
+        poz_coada=0;
+        poz_cap=0;
+        hp=0;
     }
-
-
-    barca(){}
 
     barca(const int poz_cap_,int poz_coada_, int hp_) : poz_cap{poz_cap_},poz_coada{poz_coada_},hp{hp_}{};
 
@@ -80,15 +73,16 @@ public:
 
 
 class jucator {
-    bool tip_jucator;
-    tabla t;
+    bool tip_jucator{};
+    tabla t{};
     std::vector <barca> boats;
+    int hp=2*3+3*3;
 public:
-    jucator() {}
+    jucator()=default;
 
-    jucator(const bool tip_jucator_,const tabla t_, std::vector <barca> boats_) : tip_jucator{tip_jucator_}, t{t_},boats{boats_} {}
+    jucator(const bool tip_jucator_,const tabla t_, std::vector <barca> boats_,const int hp_) : tip_jucator{tip_jucator_}, t{t_},boats{std::move(boats_)},hp{hp_} {}
 
-    jucator(const jucator &other) : tip_jucator(other.tip_jucator), t{other.t}, boats{other.boats} {}
+    jucator(const jucator &other) : tip_jucator(other.tip_jucator), t{other.t}, boats{other.boats}, hp{other.hp} {}
 
     ~jucator() {}
 
@@ -96,6 +90,7 @@ public:
         tip_jucator = other.tip_jucator;
         t = other.t;
         boats = other.boats;
+        hp=other.hp;
         return *this;
     }
 
@@ -109,14 +104,11 @@ public:
         return t;
     }
 
-    bool getType(){
-        return tip_jucator;
+    int getHp() const{
+        return hp;
     }
 
 
-    int getNrBarci(){
-        return boats.size();
-    }
 
     std::vector<barca> getBarci(){
         return boats;
@@ -184,7 +176,7 @@ public:
         enemy=other.enemy;
         return *this;
     }
-    int citire(std::string x){
+    static int citire(std::string x){
         int nr=10*(x[1]-'0')+(x[0]-'A');
         return nr;
     }
@@ -329,7 +321,7 @@ public:
         std::cout<<"Bine ai venit la Batalia de pe Dunare\n";
         std::vector<barca> flota_player;
         std::vector<barca> flota_enemy;
-        jucator player{true, alegere_barci(true,flota_player),flota_player},enemy{false, alegere_barci(false,flota_enemy),flota_enemy};
+        jucator player{true, alegere_barci(true,flota_player),flota_player,2*3+3*3},enemy{false, alegere_barci(false,flota_enemy),flota_enemy,2*3+3*3};
         std::cout<<"Tabla ta:\n";
         player.afis_player();
         std::cout<<"\nTabla inamicului: \n";
@@ -361,63 +353,34 @@ public:
         return output;
     }
 
-    jucator player_changes(jucator player,bool tip){
+    jucator player_changes(jucator player,bool tip) {
         int output;
-        if (tip==true) {
+        if (tip == true) {
             std::cout << "Alege unde ataci!\n";
         }
-        output=attack(tip);
+        output = attack(tip);
         std::vector<barca> aux_v = player.getBarci();
         tabla t_player = player.getTabla();
         std::array aux = t_player.getArray();
-        std::vector<barca> new_v;
-        std::array<int, 2> poz{0};
-        bool test=true;
-        while (t_player.getNr(output) < 0 && tip==true) {
+        int new_hp=player.getHp();
+        while (t_player.getNr(output) < 0 && tip == true) {
             std::cout << "Ai mai lovit o data aici, alege alt loc!\n";
-            output=attack(tip);
+            output = attack(tip);
         }
-        while (t_player.getNr(output) < 0 && tip==false) {
-            output=attack(tip);
+        while (t_player.getNr(output) < 0 && tip == false) {
+            output = attack(tip);
         }
         if (t_player.getNr(output) == 0) {
             aux[output] = -1;
-            test=false;
         }
         else {
-
             aux[output] = -2;
-            int i;
-            for (i = 0; i < player.getNrBarci(); i++) {
-                poz = aux_v[i].getPoz();
-                if (poz[0] == output || poz[1] == output || poz[0] + 10 == output || poz[0] - 10 == output ||
-                poz[0] - 1 == output || poz[0] + 1 == output) {
-                    if (aux_v[i].getHp() == 1) {
-                        if(tip==true){
-                            std::cout<<"Ai distrus o barca a inamicului!\n";
-                        }
-                        else{
-                            std::cout<<"Ti-a fost distrusa o barca!\n";
-                        }
-                    }
-                    else {
-                        barca aux_barca{poz[0], poz[1], aux_v[i].getHp() - 1};
-                        new_v.push_back(aux_barca);
-                    }
-                    }
-                new_v.push_back(aux_v[i]);
-            }
+            new_hp=player.getHp()-1;
 
-            /*std::cout<<"**********************\n";
-            new_player.afis_player();
-            std::cout<<"**********************\n";
-            */
         }
+        std::cout<<"\n";
         tabla new_tabla{aux};
-        if(test==false)
-            new_v=aux_v;
-        jucator new_player{tip,new_tabla,new_v};
-
+        jucator new_player{tip,new_tabla,player.getBarci(),new_hp};
         return new_player;
 
     }
@@ -438,13 +401,10 @@ public:
 
     void midgame(std::array<jucator,2> endpreparation){
         jucator player=endpreparation[0],enemy=endpreparation[1];
-        int player_boats=player.getNrBarci(),enemy_boats=enemy.getNrBarci();
-        while(player_boats!=0 && enemy_boats!=0){
+        while(player.getHp()!=0 && enemy.getHp()!=0){
             game_turn(player,enemy);
-            player_boats=player.getNrBarci();
-            enemy_boats=enemy.getNrBarci();
         }
-        if(player_boats==0){
+        if(player.getHp()==0){
             std::cout<<"Imi pare rau ai pierdut!\n";
         }
         else{
@@ -459,21 +419,26 @@ public:
         if (answer=="N" || answer=="n"){
             return false;
         }
-        else if(answer=="Y" || answer=="N"){
+        else if(answer=="Y" || answer=="y"){
             return true;
         }
+        return false;
+
     }
 
-    void startgame(){
+    bool startgame(){
         midgame(preparation());
-        if(endgame())
-            startgame();
+        bool replay=endgame();
+        return replay;
     }
 };
 
 int main(){
     game joc;
-    joc.startgame();
+    bool replay=true;
+    while(replay) {
+        replay=joc.startgame();
+    }
     return 0;
 }
 
