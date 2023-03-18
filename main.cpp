@@ -221,27 +221,25 @@ public:
             for (unsigned c = 0; c < v.size(); c++) {
                 std::cout << c + 1 << "." << conversie(v[c]) << "\n";
             }
-        }
-        if(test==true) {
             std::cin >> i;
-            while (0 > i || i > v.size()) {
+            while (0 >= i || i > v.size()) {
                 std::cout << "Introdu o varianta din cele afisate mai sus!\n";
                 std::cin >> i;
+                i=i-1;
             }
         }
         else{
             std::random_device rd;
             std::mt19937 gen(rd());
-            std::uniform_int_distribution<> random(1,v.size());
+            std::uniform_int_distribution<> random(0,v.size()-1);
             i=random(rd);
         }
-        return v[i-1];
+        return v[i];
     }
 
     tabla alegere_barci(bool test,std::vector<barca> &flota){
         int b2=0,b3=0;
         std::array<int,100> x{0};
-        std::vector<barca> boats;
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> random(0,99);
@@ -359,7 +357,6 @@ public:
             std::cout << "Alege unde ataci!\n";
         }
         output = attack(tip);
-        std::vector<barca> aux_v = player.getBarci();
         tabla t_player = player.getTabla();
         std::array aux = t_player.getArray();
         int new_hp=player.getHp();
@@ -388,7 +385,6 @@ public:
     void game_turn(jucator &player, jucator &enemy){
         jucator new_player = player_changes(player, false);
         jucator new_enemy = player_changes(enemy, true);
-        std::array<jucator, 2> answer{new_player, new_enemy};
         std::cout << "Tabla ta:\n";
         new_player.afis_player();
         std::cout << "\nTabla inamicului: \n";
