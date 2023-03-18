@@ -85,7 +85,7 @@ class jucator {
 public:
     jucator()=default;
 
-    jucator(const bool tip_jucator_,const tabla t_, std::vector <barca> boats_,const int hp_) : tip_jucator{tip_jucator_}, t{t_},boats{std::move(boats_)},hp{hp_} {}
+    jucator(const bool tip_jucator_,const tabla& t_, std::vector <barca> boats_,const int hp_) : tip_jucator{tip_jucator_}, t{t_},boats{std::move(boats_)},hp{hp_} {}
 
     jucator(const jucator &other) : tip_jucator(other.tip_jucator), t{other.t}, boats{other.boats}, hp{other.hp} {}
 
@@ -102,7 +102,8 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const jucator& j){
         os << "Jucator real="<<j.tip_jucator<<"cu tabla reprezentate astfel: "<<j.t<<"si cu hp="<<j.hp<<" cu barcile= ";
-        for (auto i=0;i<j.boats.size();i++){
+        int size=j.boats.size();
+        for (auto i=0;i<size;i++){
             os<<j.boats[i];
         }
         return os;
