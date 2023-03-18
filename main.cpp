@@ -180,7 +180,7 @@ public:
         int nr=10*(x[1]-'0')+(x[0]-'A');
         return nr;
     }
-    std::string conversie(int x){
+    static std::string conversie(int x){
         std::string a,b,c;
         a=('A'+x%10);
         b=('0'+x/10);
@@ -194,14 +194,14 @@ public:
         std::string lit, cif, val, r;
         val = conversie(a);
         cif = val[1];
-        lit = val[0];
         for (int i = 0; i <= 1; i++) {
             lit = val[0] + std::pow(-1, i) * (nr - 1);
             r = lit + cif;
             if (r[0] <= 'J' && r[0] >= 'A' && r[1] >= '0' && r[1] <= '9' ) {
-                int nr = citire(r);
-                if (x[nr]==0)
-                    v.push_back(nr);
+                int output;
+                output= citire(r);
+                if (x[output]==0)
+                    v.push_back(output);
             }
         }
         lit = val[0];
@@ -210,9 +210,9 @@ public:
             cif = val[1] + std::pow(-1, i) * (nr - 1);
             r = lit + cif;
             if (r[0] <= 'J' && r[0] >= 'A' && r[1] >= '0' && r[1] <= '9') {
-                int nr = citire(r);
-                if (x[nr]==0)
-                    v.push_back(nr);
+                int output = citire(r);
+                if (x[output]==0)
+                    v.push_back(output);
             }
         }
         int i;
