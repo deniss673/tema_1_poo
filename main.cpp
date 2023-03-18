@@ -34,10 +34,12 @@ public:
     std::array<int,100> getArray(){
         return t_p;
     }
-    /*friend std::ostream& operator<<(std::ostream& os, const tabla& t){
-        os << "Tabla este reprezentata de "<<t.t_p;
+    friend std::ostream& operator<<(std::ostream& os, const tabla& t){
+        for(int i=0;i<100;i++){
+            os<<t.t_p[i];
+        }
         return os;
-    }*/
+    }
 };
 
 class barca {
@@ -98,10 +100,13 @@ public:
     }
 
 
-    /*friend std::ostream& operator<<(std::ostream& os, const jucator& j){
-        os << "Jucator real="<<j.tip_jucator<<"cu tabla reprezentate astfel: "<<j.t<<"pl"<<j.nr_barci;
+    friend std::ostream& operator<<(std::ostream& os, const jucator& j){
+        os << "Jucator real="<<j.tip_jucator<<"cu tabla reprezentate astfel: "<<j.t<<"si cu hp="<<j.hp<<" cu barcile= ";
+        for (auto i=0;i<j.boats.size();i++){
+            os<<j.boats[i];
+        }
         return os;
-    }*/
+    }
 
     tabla getTabla(){
         return t;
@@ -179,6 +184,11 @@ public:
         player2=other.player2;
         return *this;
     }
+    friend std::ostream& operator<<(std::ostream& os, const game& joc){
+        os << "Jucatorul 1= "<<joc.player1<<"\nJucatorul 2= "<<joc.player2;
+        return os;
+    }
+
     static int citire(std::string x){
         int nr=10*(x[1]-'0')+(x[0]-'A');
         return nr;
@@ -192,7 +202,7 @@ public:
     }
 
 
-    int alegere(int a,std::array<int,100> const x,int nr,bool test) {
+    int alegere(int a,const std::array<int,100> x,int nr,bool test) {
         std::vector<int> v;
         std::string lit, cif, val, r;
         val = conversie(a);
@@ -399,7 +409,7 @@ public:
 
 
 
-    void midgame(std::array<jucator,2> const endpreparation){
+    void midgame(const std::array<jucator,2> endpreparation){
         jucator player=endpreparation[0],enemy=endpreparation[1];
         while(player.getHp()!=0 && enemy.getHp()!=0){
             game_turn(player,enemy);
