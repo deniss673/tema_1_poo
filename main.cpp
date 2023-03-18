@@ -165,15 +165,15 @@ public:
 };
 
 class game {
-    jucator player,enemy;
+    jucator player1,player2;
 public:
     game(){}
-    game(const jucator &player, const jucator &enemy) : player(player), enemy(enemy) {}
+    game(const jucator &player1, const jucator &player2) : player1(player1), player2(player2) {}
     ~game(){};
-    game(const game& other):player(other.player),enemy(other.enemy){}
+    game(const game& other):player1(other.player1),player2(other.player2){}
     game& operator=(const game& other){
-        player=other.player;
-        enemy=other.enemy;
+        player1=other.player1;
+        player2=other.player2;
         return *this;
     }
     static int citire(std::string x){
@@ -189,7 +189,7 @@ public:
     }
 
 
-    int alegere(int a,std::array<int,100> x,int nr,bool test) {
+    int alegere(int a,std::array<int,100> const x,int nr,bool test) {
         std::vector<int> v;
         std::string lit, cif, val, r;
         val = conversie(a);
@@ -222,11 +222,12 @@ public:
                 std::cout << c + 1 << "." << conversie(v[c]) << "\n";
             }
             std::cin >> i;
-            while (0 >= i || i > v.size()) {
+            int size=v.size();
+            while (0 >= i || i > size-1) {
                 std::cout << "Introdu o varianta din cele afisate mai sus!\n";
                 std::cin >> i;
-                i=i-1;
             }
+            i=i-1;
         }
         else{
             std::random_device rd;
@@ -395,7 +396,7 @@ public:
 
 
 
-    void midgame(std::array<jucator,2> endpreparation){
+    void midgame(std::array<jucator,2> const& endpreparation){
         jucator player=endpreparation[0],enemy=endpreparation[1];
         while(player.getHp()!=0 && enemy.getHp()!=0){
             game_turn(player,enemy);
