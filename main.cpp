@@ -4,9 +4,8 @@
 #include <array>
 #include <cmath>
 #include <utility>
-#include <fstream>
 
-/*std::ifstream fin("input.txt");*/
+
 
 
 class tabla{
@@ -330,11 +329,11 @@ public:
         return t;
     }
 
-    std::array<jucator,2> preparation(){
+    std::array<jucator,2> preparation(bool randomplay){
         std::cout<<"Bine ai venit la Batalia de pe Dunare\n";
         std::vector<barca> flota_player;
         std::vector<barca> flota_enemy;
-        jucator player{true, alegere_barci(true,flota_player),flota_player,2*3+3*3},enemy{false, alegere_barci(false,flota_enemy),flota_enemy,2*3+3*3};
+        jucator player{true, alegere_barci(randomplay,flota_player),flota_player,2*3+3*3},enemy{false, alegere_barci(false,flota_enemy),flota_enemy,2*3+3*3};
         std::cout<<"Tabla ta:\n";
         player.afis_player();
         std::cout<<"\nTabla inamicului: \n";
@@ -397,9 +396,9 @@ public:
 
     }
 
-    void game_turn(jucator &player, jucator &enemy){
-        jucator new_player = player_changes(player, false);
-        jucator new_enemy = player_changes(enemy, true);
+    void game_turn(jucator &player, jucator &enemy,bool randomplay){
+        jucator new_player = player_changes(player, randomplay);
+        jucator new_enemy = player_changes(enemy, false);
         std::cout << "Tabla ta:\n";
         new_player.afis_player();
         std::cout << "\nTabla inamicului: \n";
@@ -410,10 +409,10 @@ public:
 
 
 
-    void midgame(const std::array<jucator,2> endpreparation){
+    void midgame(const std::array<jucator,2> endpreparation,bool randomplay){
         jucator player=endpreparation[0],enemy=endpreparation[1];
         while(player.getHp()!=0 && enemy.getHp()!=0){
-            game_turn(player,enemy);
+            game_turn(player,enemy,randomplay);
         }
         if(player.getHp()==0){
             std::cout<<"Imi pare rau ai pierdut!\n";
@@ -437,8 +436,8 @@ public:
 
     }
 
-    bool startgame(){
-        midgame(preparation());
+    bool startgame(bool randomplay){
+        midgame(preparation(randomplay),randomplay);
         bool replay=endgame();
         return replay;
     }
@@ -446,9 +445,19 @@ public:
 
 int main(){
     game joc;
+    std::string answer;
+    bool randomplay=false;
     bool replay=true;
+    std::cout<<"Vrei ca jocul sa fie generat random? Y/N \n";
+    std::cin>>answer;
+    if(answer=="N"||answer=="n"){
+        randomplay=true;
+    }
+    else{
+        randomplay=false;
+    }
     while(replay) {
-        replay=joc.startgame();
+        replay=joc.startgame(randomplay);
     }
     return 0;
 }
