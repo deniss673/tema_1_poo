@@ -4,6 +4,9 @@
 #include <array>
 #include <cmath>
 #include <utility>
+#include <fstream>
+
+/*std::ifstream fin("input.txt");*/
 
 
 class tabla{
@@ -396,7 +399,7 @@ public:
 
 
 
-    void midgame(std::array<jucator,2> const& endpreparation){
+    void midgame(std::array<jucator,2> const endpreparation){
         jucator player=endpreparation[0],enemy=endpreparation[1];
         while(player.getHp()!=0 && enemy.getHp()!=0){
             game_turn(player,enemy);
