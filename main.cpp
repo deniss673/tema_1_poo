@@ -79,12 +79,13 @@ public:
 class jucator {
     bool tip_jucator{};
     tabla t{};
-    std::vector <barca> boats;
-    int hp=2*3+3*3;
+    std::vector<barca> boats;
+    int hp = 2 * 3 + 3 * 3;
 public:
-    jucator()=default;
+    jucator() = default;
 
-    jucator(const bool tip_jucator_,const tabla& t_, std::vector <barca> boats_,const int hp_) : tip_jucator{tip_jucator_}, t{t_},boats{std::move(boats_)},hp{hp_} {}
+    jucator(const bool tip_jucator_, const tabla &t_, std::vector<barca> boats_, const int hp_) : tip_jucator{
+            tip_jucator_}, t{t_}, boats{std::move(boats_)}, hp{hp_} {}
 
     jucator(const jucator &other) : tip_jucator(other.tip_jucator), t{other.t}, boats{other.boats}, hp{other.hp} {}
 
@@ -94,83 +95,66 @@ public:
         tip_jucator = other.tip_jucator;
         t = other.t;
         boats = other.boats;
-        hp=other.hp;
+        hp = other.hp;
         return *this;
     }
 
 
-    friend std::ostream& operator<<(std::ostream& os, const jucator& j){
-        os << "Jucator real="<<j.tip_jucator<<"cu tabla reprezentate astfel: "<<j.t<<"si cu hp="<<j.hp<<" cu barcile= ";
-        int size=j.boats.size();
-        for (auto i=0;i<size;i++){
-            os<<j.boats[i];
+    friend std::ostream &operator<<(std::ostream &os, const jucator &j) {
+        os << "Jucator real=" << j.tip_jucator << "cu tabla reprezentate astfel: " << j.t << "si cu hp=" << j.hp
+           << " cu barcile= ";
+        for (auto i = 0ull; i < j.boats.size(); i++) {
+            os << j.boats[i];
         }
         return os;
     }
 
-    tabla getTabla(){
+    tabla getTabla() {
         return t;
     }
 
-    int getHp() const{
+    int getHp() const {
         return hp;
     }
 
 
-
-    std::vector<barca> getBarci(){
+    std::vector<barca> getBarci() {
         return boats;
     }
 
-    void afis_player() {
-        std::cout<<" ";
-        for (char x='A';x<='J';x++){
-            std::cout<<" "<<x;
-        }
-        std::cout<<"\n";
-        for(int i=0; i<10;i++){
-            std::cout<<i;
-            for(int j=0;j<10;j++){
-                int y=i*10+j;
-                if (t.getNr(y)==0)
-                    std::cout<<" ~";
-                else if (t.getNr(y)==-1)
-                    std::cout<<" X";
-                else if (t.getNr(y)==-2)
-                    std::cout<<" @";
-                else if (t.getNr(y)<5 && t.getNr(y)>0)
-                    std::cout<<" "<<t.getNr(y);
-            }
-            std::cout<<"\n";
-        }
+    bool getType() {
+        return tip_jucator;
     }
-    void afis_enemy(){
-        {
-            std::cout<<" ";
-            for (char x='A';x<='J';x++){
-                std::cout<<" "<<x;
-            }
-            std::cout<<"\n";
-            for(int i=0; i<10;i++){
-                std::cout<<i;
-                for(int j=0;j<10;j++){
-                    int y=i*10+j;
-                    if (t.getNr(y)>=0)
-                        std::cout<<" ~";
-                    else if (t.getNr(y)==-2)
-                        std::cout<<" @";
-                    else if (t.getNr(y)==-1){
-                        std::cout<<" X";
-                    }
 
+
+    void afis_player(bool player_type) {
+        std::cout << " ";
+        for (char x = 'A'; x <= 'J'; x++) {
+            std::cout << " " << x;
+        }
+        std::cout << "\n";
+        for (int i = 0; i < 10; i++) {
+            std::cout << i;
+            for (int j = 0; j < 10; j++) {
+                int y = i * 10 + j;
+                if (t.getNr(y) == 0)
+                    std::cout << " ~";
+                else if (t.getNr(y) == -1)
+                    std::cout << " X";
+                else if (t.getNr(y) == -2)
+                    std::cout << " @";
+                else if (t.getNr(y) < 5 && t.getNr(y) > 0) {
+                    if (player_type == true)
+                        std::cout << " " << t.getNr(y);
+                    else
+                        std::cout << " " << "X";
                 }
-                std::cout<<"\n";
             }
-
+            std::cout << "\n";
         }
     }
-
 };
+
 
 class game {
     jucator player1,player2;
@@ -201,33 +185,36 @@ public:
         return c;
     }
 
+    void alegere_for(std::vector<int> &v,std::array<int,100> x,int nr,std::string val,std::string lit,std::string cif){
+        std::string r;
+        std::string aux;
+        for (int i = 0; i <= 1; i++) {
+            if (lit==""){
+                aux = val[0] + std::pow(-1, i) * (nr - 1);
+                r=aux+cif;
+            }
+            else if(cif==""){
+                aux = val[1] + std::pow(-1, i) * (nr - 1);
+                r = lit + aux;
+            }
+            if (r[0] <= 'J' && r[0] >= 'A' && r[1] >= '0' && r[1] <= '9' ) {
+                int output;
+                output= citire(r);
+                if (x[output]==0){
+                    v.push_back(output);
+                }
+            }
+        }
+    }
 
     int alegere(int a,const std::array<int,100> x,int nr,bool test) {
         std::vector<int> v;
         std::string lit, cif, val, r;
         val = conversie(a);
-        cif = val[1];
-        for (int i = 0; i <= 1; i++) {
-            lit = val[0] + std::pow(-1, i) * (nr - 1);
-            r = lit + cif;
-            if (r[0] <= 'J' && r[0] >= 'A' && r[1] >= '0' && r[1] <= '9' ) {
-                int output;
-                output= citire(r);
-                if (x[output]==0)
-                    v.push_back(output);
-            }
-        }
-        lit = val[0];
-
-        for (int i = 0; i <= 1; i++) {
-            cif = val[1] + std::pow(-1, i) * (nr - 1);
-            r = lit + cif;
-            if (r[0] <= 'J' && r[0] >= 'A' && r[1] >= '0' && r[1] <= '9') {
-                int output = citire(r);
-                if (x[output]==0)
-                    v.push_back(output);
-            }
-        }
+        lit=val[0];
+        cif=val[1];
+        alegere_for(v,x,nr,val,lit,"");
+        alegere_for(v,x,nr,val,"",cif);
         int i;
         if(test==true) {
             std::cout << "Alege unde va fi celalat cap al barcii:\n";
@@ -251,16 +238,15 @@ public:
         return v[i];
     }
 
-    tabla alegere_barci(bool test,std::vector<barca> &flota){
-        int b2=0,b3=0;
-        std::array<int,100> x{0};
+    void alegere_barci_while(std::array<int,100> &x,int nr,bool player_type,std::vector<barca> &flota){
+        int count=0;
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> random(0,99);
-        while(b2!=3){
+        while(count!=3){
             std::string b;
             int a;
-            if(test==true) {
+            if(player_type==true) {
                 std::cout << "Alege unde va fi varful\n";
                 std::cin >> b;
                 a=citire(b);
@@ -277,55 +263,30 @@ public:
                     a=random(rd);
                 }
             }
-            if (x[a]!=0 && test==true){
+            if (x[a]!=0 && player_type==true){
                 std::cout<<"Deja ai aici o barca\n";
                 continue;
             }
             else{
-                x[a]=2;
-                int r=alegere(a,x,2,test);
-                x[r]=2;
-                b2++;
-                barca boat{a,r,2};
+                x[a]=nr;
+                int r=alegere(a,x,nr,player_type);
+                x[r]=nr;
+                if(nr==3){
+                    x[a-((a-r)/2)]=nr;
+                }
+                count++;
+                barca boat{a,r,nr};
                 flota.push_back(boat);
             }
         }
-        while(b3!=3){
-            int a;
-            std::string b;
-            if(test==true) {
-                std::cout << "Alege unde va fi varful\n";
-                std::cin >> b;
-                a = citire(b);
-                while (a < 0 || a > 99) {
-                    std::cout << "Alege un input format din o litera de la A la J si o cifra de la 0 la 9!\n";
-                    std::cin >> b;
-                    a = citire(b);
-                }
-            }
-            else{
-                a=random(rd);
-                while (x[a]!=0){
-                    a=random(rd);
-                }
-            }
+    }
 
-            if (x[a]!=0 && test==true){
-                std::cout<<"Deja ai aici o barca\n";
-                continue;
-            }
-            else{
-                x[a]=3;
-                int r=alegere(a,x,3,test);
-                x[r]=3;
-                x[a-((a-r)/2)]=3;
-                b3++;
-                barca boat{a,r,3};
-                flota.push_back(boat);
-            }
-        }
+
+    tabla alegere_barci(bool test,std::vector<barca> &flota){
+        std::array<int,100> x{0};
+        alegere_barci_while(x,2,test,flota);
+        alegere_barci_while(x,3,test,flota);
         tabla t{x};
-
         return t;
     }
 
@@ -335,9 +296,9 @@ public:
         std::vector<barca> flota_enemy;
         jucator player{true, alegere_barci(randomplay,flota_player),flota_player,2*3+3*3},enemy{false, alegere_barci(false,flota_enemy),flota_enemy,2*3+3*3};
         std::cout<<"Tabla ta:\n";
-        player.afis_player();
+        player.afis_player(player.getType());
         std::cout<<"\nTabla inamicului: \n";
-        enemy.afis_enemy();
+        enemy.afis_player(enemy.getType());
         std::array<jucator,2> endpreparation{player,enemy};
         return endpreparation;
     }
@@ -400,9 +361,9 @@ public:
         jucator new_player = player_changes(player, randomplay);
         jucator new_enemy = player_changes(enemy, false);
         std::cout << "Tabla ta:\n";
-        new_player.afis_player();
+        new_player.afis_player(new_player.getType());
         std::cout << "\nTabla inamicului: \n";
-        new_enemy.afis_enemy();
+        new_enemy.afis_player(new_enemy.getType());
         player=new_player;
         enemy=new_enemy;
     }
@@ -447,7 +408,7 @@ int main(){
     game joc;
     std::string answer;
     bool randomplay=false;
-    bool replay=true;
+    bool play_again=true;
     std::cout<<"Vrei ca jocul sa fie generat random? Y/N \n";
     std::cin>>answer;
     if(answer=="N"||answer=="n"){
@@ -456,8 +417,8 @@ int main(){
     else{
         randomplay=false;
     }
-    while(replay) {
-        replay=joc.startgame(randomplay);
+    while(play_again) {
+        play_again=joc.startgame(randomplay);
     }
     return 0;
 }
