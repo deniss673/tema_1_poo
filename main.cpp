@@ -126,6 +126,11 @@ public:
         return tip_jucator;
     }
 
+    void change(int new_hp, tabla new_t){
+        hp=new_hp;
+        t=new_t;
+    }
+
 
     void afis_player(bool player_type) {
         std::cout << " ";
@@ -185,7 +190,7 @@ public:
         return c;
     }
 
-    void alegere_for(std::vector<int> &v,std::array<int,100> x,int nr,std::string val,std::string lit,std::string cif){
+    void alegere_for(std::vector<int> &v,const std::array<int,100> x,int nr,std::string val,std::string lit,std::string cif){
         std::string r;
         std::string aux;
         for (int i = 0; i <= 1; i++) {
@@ -209,7 +214,7 @@ public:
 
     int alegere(int a,const std::array<int,100> x,int nr,bool test) {
         std::vector<int> v;
-        std::string lit, cif, val, r;
+        std::string lit, cif, val;
         val = conversie(a);
         lit=val[0];
         cif=val[1];
@@ -326,7 +331,7 @@ public:
         return output;
     }
 
-    jucator player_changes(jucator player,bool tip) {
+    void player_changes(jucator &player,bool tip) {
         int output;
         if (tip == true) {
             std::cout << "Alege unde ataci!\n";
@@ -352,20 +357,17 @@ public:
         }
         std::cout<<"\n";
         tabla new_tabla{aux};
-        jucator new_player{tip,new_tabla,player.getBarci(),new_hp};
-        return new_player;
+        player.change(new_hp,new_tabla);
 
     }
 
     void game_turn(jucator &player, jucator &enemy,bool randomplay){
-        jucator new_player = player_changes(player, randomplay);
-        jucator new_enemy = player_changes(enemy, false);
+        player_changes(player, randomplay);
+        player_changes(enemy, false);
         std::cout << "Tabla ta:\n";
-        new_player.afis_player(new_player.getType());
+        player.afis_player(player.getType());
         std::cout << "\nTabla inamicului: \n";
-        new_enemy.afis_player(new_enemy.getType());
-        player=new_player;
-        enemy=new_enemy;
+        enemy.afis_player(enemy.getType());
     }
 
 
