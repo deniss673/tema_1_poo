@@ -118,15 +118,11 @@ public:
     }
 
 
-    std::vector<barca> getBarci() {
-        return boats;
-    }
-
     bool getType() {
         return tip_jucator;
     }
 
-    void change(int new_hp, tabla new_t){
+    void change(int new_hp, const tabla &new_t){
         hp=new_hp;
         t=new_t;
     }
@@ -190,7 +186,7 @@ public:
         return c;
     }
 
-    void alegere_for(std::vector<int> &v,const std::array<int,100> x,int nr,std::string val,std::string lit,std::string cif){
+    void alegere_for(std::vector<int> &v,const std::array<int,100> x,int nr,std::string val,const std::string &lit,const std::string &cif){
         std::string r;
         std::string aux;
         for (int i = 0; i <= 1; i++) {
