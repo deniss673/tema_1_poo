@@ -128,7 +128,7 @@ public:
     }
 
 
-    void afis_player(bool player_type) {
+    void afis_player() {
         std::cout << " ";
         for (char x = 'A'; x <= 'J'; x++) {
             std::cout << " " << x;
@@ -145,7 +145,7 @@ public:
                 else if (t.getNr(y) == -2)
                     std::cout << " @";
                 else if (t.getNr(y) < 5 && t.getNr(y) > 0) {
-                    if (player_type == true)
+                    if (tip_jucator == true)
                         std::cout << " " << t.getNr(y);
                     else
                         std::cout << " " << "X";
@@ -297,9 +297,9 @@ public:
         std::vector<barca> flota_enemy;
         jucator player{true, alegere_barci(randomplay,flota_player),flota_player,2*3+3*3},enemy{false, alegere_barci(false,flota_enemy),flota_enemy,2*3+3*3};
         std::cout<<"Tabla ta:\n";
-        player.afis_player(player.getType());
+        player.afis_player();
         std::cout<<"\nTabla inamicului: \n";
-        enemy.afis_player(enemy.getType());
+        enemy.afis_player();
         std::array<jucator,2> endpreparation{player,enemy};
         return endpreparation;
     }
@@ -361,9 +361,9 @@ public:
         player_changes(player, randomplay);
         player_changes(enemy, false);
         std::cout << "Tabla ta:\n";
-        player.afis_player(player.getType());
+        player.afis_player();
         std::cout << "\nTabla inamicului: \n";
-        enemy.afis_player(enemy.getType());
+        enemy.afis_player();
     }
 
 
