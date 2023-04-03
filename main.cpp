@@ -118,10 +118,6 @@ public:
     }
 
 
-    bool getType() {
-        return tip_jucator;
-    }
-
     void change(int new_hp, const tabla &new_t){
         hp=new_hp;
         t=new_t;
