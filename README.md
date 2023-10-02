@@ -1,3 +1,1 @@
-I developed a clone of the Tetris game in C++ using object-oriented
-programming. This project helped me improve my programming skills and
-deepen my understanding of OOP concepts
+A C++ implementation of the battleship game played in console
